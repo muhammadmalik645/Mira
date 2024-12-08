@@ -1043,7 +1043,7 @@ class SlideshowComponent extends SliderComponent {
     const slideScrollPosition =
       this.slider.scrollLeft +
       this.sliderFirstItemNode.clientWidth *
-        (this.sliderControlLinksArray.indexOf(event.currentTarget) + 1 - this.currentPage);
+      (this.sliderControlLinksArray.indexOf(event.currentTarget) + 1 - this.currentPage);
     this.slider.scrollTo({
       left: slideScrollPosition,
     });
@@ -1058,8 +1058,60 @@ class VariantSelects extends HTMLElement {
   }
 
   connectedCallback() {
+    const colorProductUrls = document.querySelectorAll('[data-parent-product]');
+    const productsData = [];
+
+    //Prefetching the data to ensure instant change and loading it asynchronously so it doesn't block the main thread
+    colorProductUrls.forEach(product => {
+      fetch(product.dataset.productUrl)
+        .then((res) => res.text())
+        .then((htmlString) => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(htmlString, 'text/html');
+          const pdpSection = doc.querySelector('product-info');
+
+          //Data is stored in an associative array so the code knows which element to render in the DOM
+          productsData[product.value] = pdpSection.outerHTML;
+        });
+    });
+
     this.addEventListener('change', (event) => {
       const target = this.getInputForEventTarget(event.target);
+
+      //Checking if the Color Variant is Clicked
+      if (target && target.dataset && target.dataset.color !== undefined) {
+        const productInfoHtml = productsData[target.value];
+        let currentSelectedSize = document.querySelector('[data-option-size][checked]').value
+
+        //Parsing the data into Html
+        const parser = new DOMParser();
+        const parsedDoc = parser.parseFromString(productInfoHtml, 'text/html');
+        const newProductInfo = parsedDoc.querySelector('product-info');
+
+
+        if (newProductInfo) {
+          document.querySelector('product-info').replaceWith(newProductInfo);
+
+          //Code to Retain the Old Selected Size
+          if (currentSelectedSize) {
+            newProductInfo.querySelector('[data-option-size][checked]').checked = false;
+            newProductInfo.querySelector(`[data-option-size][value="${currentSelectedSize}"]`).checked = true;
+
+            currentSelectedSize = newProductInfo.querySelector('[data-option-size][checked]')
+            console.log('current', currentSelectedSize)
+            if (currentSelectedSize.classList.contains('disabled')) {
+              console.log('inside current')
+              currentSelectedSize.checked = false;
+              currentSelectedSize.parentElement.querySelector('[data-option-size]:not(.disabled)');
+            }
+          }
+
+          //Updating URL so the correct path is sent to Trackers
+          let newUrl = `${window.location.origin}${document.querySelector('[data-color][checked]').dataset.productUrl}?variant=${document.querySelector('.product-variant-id').value}`
+          window.history.pushState({ path: newUrl }, '', newUrl)
+        }
+
+      }
       this.updateSelectionMetadata(event);
 
       publish(PUB_SUB_EVENTS.optionValueSelectionChange, {
@@ -1074,7 +1126,6 @@ class VariantSelects extends HTMLElement {
 
   updateSelectionMetadata({ target }) {
     const { value, tagName } = target;
-
     if (tagName === 'SELECT' && target.selectedOptions.length) {
       Array.from(target.options)
         .find((option) => option.getAttribute('selected'))
