@@ -25,6 +25,19 @@
     %}
 {% endcomment %}
 
+{% comment %} This code ensures that the correct color swatch is selected {% endcomment %}
+{% liquid
+  assign downcased_name = name | downcase
+  assign downcased_color = value | downcase
+  if downcased_name contains 'color'
+    if checked and request.path contains downcased_color
+      assign checked = true
+    else
+      assign checked = false
+    endif
+  endif
+%}
+
 <input
   type="{{ type | default: 'radio' }}"
   id="{{ id }}"
