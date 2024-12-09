@@ -77,6 +77,11 @@ I have done ADA projects for Voluspa.com so I am familiar with Accessibility as 
 > each color swatch inside its input. The next approach that I have coded myself is based on prefetching URLs and the sections using the section rendering API to make the transition and > switching between variants seamless. Aftler replacing the old section with the new one, I update the URLs and make sure out of stock sizes aren't selected.
 > The branch called Prefetching-Variants-Approach utilizes my custom approach and the branch called Dawn-HTMLUpdateUtility-Approach utilizes Dawn's native HTMLUpdateUtility object.
 
+> [!NOTE]
+> Note that no scripts in the prefetching approach have been reinitialized, that is because Dawn is leveraging web components and
+> all the dependent Javascript is initialized with the connectedCallback() lifecycle method when the web components
+> are appended to the DOM.
+
 Hope you like the code and functionality.
 
 Best,
