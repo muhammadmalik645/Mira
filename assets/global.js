@@ -1090,6 +1090,11 @@ class VariantSelects extends HTMLElement {
 
 
         if (newProductInfo) {
+
+          /* Note that the scripts haven't been reinitialized, that is because Dawn is leveraging web components and 
+          all the dependent Javascript is initialized with the connectedCallback() lifecycle method when the web components are
+          appended to the DOM */
+
           document.querySelector('product-info').replaceWith(newProductInfo);
 
           //Code to Retain the Old Selected Size
