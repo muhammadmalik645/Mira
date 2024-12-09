@@ -1,3 +1,9 @@
+Preview Link: https://mira-dev-test.myshopify.com
+
+Password: cheeld
+
+Sample Product URL: https://mira-dev-test.myshopify.com/products/red-t-shirt
+
 # Steps for displaying different Colored Products as variants of a Single Product
 
 ## 1. Creating the Collection
@@ -62,3 +68,17 @@ https://pagespeed.web.dev/analysis/https-mira-dev-test-myshopify-com-products-bl
 
 As you can see, both SEO and Accessibility have a 100 and 97 score respectively for mobile and desktop. But that is more of a Dawn thing, I didn't do much to improve the score but this also shows how my code doesn't negatively affect
 SEO, accessibility and site performance.
+
+I have done ADA projects for Voluspa.com so I am familiar with Accessibility as well.
+
+
+> [!IMPORTANT]
+> I have created 2 PRs for both my approaches, one utilizes Dawn's native HTMLUpdateUtility object that updates the entire main section based on the Product URL. I have stored the Product URL for
+> each color swatch inside its input. The next approach that I have coded myself is based on prefetching URLs and the sections using the section rendering API to make the transition and > switching between variants seamless. Aftler replacing the old section with the new one, I update the URLs and make sure out of stock sizes aren't selected.
+> The branch called Prefetching-Variants-Approach utilizes my custom approach and the branch called Dawn-HTMLUpdateUtility-Approach utilizes Dawn's native HTMLUpdateUtility object.
+
+Hope you like the code and functionality.
+
+Best,
+
+Muhammad Malik
